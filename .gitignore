@@ -1,0 +1,67 @@
+# Entorno virtual
+env/
+.env
+.env.*
+
+# Archivos compilados por Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configuración IDEs/Editors
+.vscode/
+.idea/
+*.iml
+
+# Archivos de logs
+*.log
+
+# Pruebas y cobertura
+.coverage
+htmlcov/
+pytest_cache/
+.tox/
+.nox/
+dist/
+build/
+.eggs/
+*.egg-info/
+
+# Paquetes
+*.whl
+
+# Bases de datos locales
+instance/
+*.sqlite
+*.db
+
+# Node (si se usa para frontend o scripts)
+node_modules/
+
+# Docker
+docker-compose.override.yml
+*.dockerfile
+
+# Caché y otros archivos temporales
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Documentación generada
+docs/_build/
+
+# Configuración específica de SO
+.DS_Store
+Thumbs.db
+
+# Seguridad
+secrets.json
+
+# Claves SSH
+id_rsa
+id_rsa.pub
+
+# Otros archivos sensibles
+config.yaml
+config.yml
