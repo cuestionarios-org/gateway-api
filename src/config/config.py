@@ -14,6 +14,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 class ProductionConfig(Config):
     DEBUG = False

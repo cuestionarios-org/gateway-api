@@ -12,3 +12,12 @@ def auth_login():
 def auth_register():
     data, status = AuthService.register(request.json)
     return jsonify(data), status
+
+@auth_bp.route('/protected', methods=['GET'])
+def auth_protected():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({"message": "Token is missing!"}), 401
+
+    data, status = AuthService.protected_route(token)
+    return jsonify(data), status

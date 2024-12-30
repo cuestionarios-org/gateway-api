@@ -29,7 +29,11 @@ def test_register_incomplete_data(client):
     response = client.post('/auth/register', json={"username": "newuser"})
     assert response.status_code == 500 # todo 400
 
+# Modificar cuando tengamos una ruta protegida real
 def test_protected_route_without_token(client):
     response = client.get('/auth/protected')
-    assert response.status_code == 404 # todo 401
-    assert response.get_json()["message"] == "Token is missing!"
+    assert response.status_code == 401  # Código de estado correcto
+    json_data = response.get_json()
+    assert json_data is not None
+    assert json_data["message"] == "Token is missing!"
+
