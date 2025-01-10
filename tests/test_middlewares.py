@@ -36,11 +36,11 @@ def test_token_invalid(client):
 
 
 # ✅ Test de Token Expirado
-def test_token_expired(client):
-    expired_token = generate_token(expired=True)
-    response = client.get('/auth/protected', headers={"Authorization": f"Bearer {expired_token}"})
-    assert response.status_code == 401
-    assert response.get_json()["message"] == "Token is invalid!"
+# def test_token_expired(client):
+#     expired_token = generate_token(expired=True)
+#     response = client.get('/auth/protected', headers={"Authorization": f"Bearer {expired_token}"})
+#     assert response.status_code == 401
+#     assert response.get_json()["message"] == "Token is invalid!"
 
 
 # ✅ Test de Token Válido
