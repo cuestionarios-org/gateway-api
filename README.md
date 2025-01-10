@@ -45,6 +45,46 @@ api-gateway/
 
 ---
 
+##  **Primeros Pasos**
+1. Clonar el repositorio:
+    ```bash
+    git clone https://github.com/tu-usuario/api-gateway.git
+    cd api-gateway
+    ```
+
+2. Crear y activar un entorno virtual:
+    ```bash
+    python -m venv env
+    source env/bin/activate  # En Windows usa `env\Scripts\activate`
+    ```
+
+3. Instalar las dependencias:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. Configurar las variables de entorno:
+    Crea un archivo `.env` en la raíz del proyecto y añade las variables necesarias:
+    ```env
+    SECRET_KEY=your_secret_key
+    JWT_SECRET_KEY=your_jwt_secret
+    SERVICE_TIMEOUT=5
+    RETRY_ATTEMPTS=3
+    AUTH_SERVICE_URL=http://auth-service
+    ```
+
+5. Ejecutar la aplicación:
+    ```bash
+    python src/main.py
+    ```
+
+6. Ejecutar las pruebas para asegurar que todo funciona correctamente:
+    ```bash
+    pytest tests/
+    ```
+
+---
+
 ## 🔑 **Autenticación y Autorización**
 - **JWT (JSON Web Token):** Autenticación para usuarios externos.
 - **Service Token:** Token estático para comunicación segura entre microservicios.
