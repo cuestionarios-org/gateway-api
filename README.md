@@ -1,144 +1,155 @@
- 
 # 🚀 **API Gateway para Sistema de Cuestionarios en Microservicios**
 
 ## 📚 **Descripción General**
-El **API Gateway** es el punto de entrada centralizado para el sistema de cuestionarios en una arquitectura basada en microservicios. Se encarga de manejar la autenticación, autorización, enrutamiento de solicitudes y comunicación segura entre servicios, garantizando eficiencia, seguridad y escalabilidad.
+El **API Gateway** es el punto de entrada centralizado para el sistema de cuestionarios en una arquitectura basada en microservicios. Maneja autenticación, autorización, enrutamiento de solicitudes y comunicación segura entre servicios, asegurando eficiencia, seguridad y escalabilidad. Diseñado con una arquitectura modular para facilitar la extensión y el mantenimiento.
 
 ---
 
 ## 🛠️ **Tecnologías Utilizadas**
-- **Python** (Flask)
-- **PyJWT** (Autenticación JWT)
+- **Python** (Flask como framework principal)
+- **PyJWT** (Manejo de autenticación JWT)
 - **Docker** (Contenedorización)
 - **Docker Compose** (Orquestación de servicios)
-- **YAML** (Configuración de rutas)
+- **pytest** (Pruebas automatizadas)
+- **logging** (Registro de logs centralizado)
 
 ---
 
 ## 📂 **Estructura del Proyecto**
+La estructura actual del proyecto sigue una organización clara y modular:
+
 ```
 api-gateway/
-├── config/
-│   ├── config.py           # Configuraciones globales
-│   ├── routes.yaml         # Definición de rutas
-│   └── security.py         # Validación JWT y Tokens de Servicio
-│
-├── controllers/
-│   ├── auth_controller.py  # Manejo de autenticación
-│   ├── user_controller.py  # Controlador para usuarios
-│   ├── service_controller.py # Comunicación interna entre servicios
-│
-├── middlewares/
-│   ├── auth_middleware.py  # Middleware para autenticación
-│   └── logging_middleware.py # Middleware de logs
-│
-├── tests/
-│   ├── test_routes.py      # Pruebas de rutas
-│   ├── test_auth.py        # Pruebas de autenticación
-│   └── test_services.py    # Pruebas de comunicación interna
-│
-├── main.py                 # Punto de entrada principal
-├── requirements.txt        # Dependencias
-├── docker-compose.yml      # Orquestación Docker
-└── .env                    # Variables de entorno
+├── src/
+│   ├── config/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── config.py             # Configuraciones globales
+│   │
+│   ├── routes/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── auth_routes.py        # Rutas relacionadas con la autenticación
+│   │   ├── register_routes.py    # Rutas para registro de usuarios
+│   │
+│   ├── services/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── auth_service.py       # Lógica para autenticación y autorización
+│   │
+│   ├── utils/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── error_handlers.py     # Manejadores de errores personalizados
+│   │   ├── logger.py             # Configuración y gestión de logs
+│   │
+│   ├── middlewares/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── jwt_middleware.py     # Middleware para validación JWT
+│   │   ├── role_required.py      # Middleware para validación de roles
+│   │
+│   ├── tests/
+│   │   ├── __init__.py           # Inicializador del módulo
+│   │   ├── test_auth.py          # Pruebas para autenticación
+│   │   ├── test_middlewares.py   # Pruebas para middlewares
+│   │
+│   ├── main.py                   # Punto de entrada principal
+├── requirements.txt              # Dependencias del proyecto
+├── Dockerfile                    # Configuración para construir la imagen Docker
+├── docker-compose.yml            # Orquestación de servicios con Docker Compose
+├── .env                          # Variables de entorno
+├── pytest.ini                    # Configuración para pytest
+├── .gitignore                    # Archivos y carpetas a ignorar en git
+├── readme.md                     # Documentación del proyecto
 ```
 
 ---
 
-##  **Primeros Pasos**
-1. Clonar el repositorio:
-    ```bash
-    git clone https://github.com/tu-usuario/api-gateway.git
-    cd api-gateway
-    ```
+## 🧑‍💻 **Primeros Pasos**
 
-2. Crear y activar un entorno virtual:
-    ```bash
-    python -m venv env
-    source env/bin/activate  # En Windows usa `env\Scripts\activate`
-    ```
-
-3. Instalar las dependencias:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4. Configurar las variables de entorno:
-    Crea un archivo `.env` en la raíz del proyecto y añade las variables necesarias:
-    ```env
-    SECRET_KEY=your_secret_key
-    JWT_SECRET_KEY=your_jwt_secret
-    SERVICE_TIMEOUT=5
-    RETRY_ATTEMPTS=3
-    AUTH_SERVICE_URL=http://auth-service
-    ```
-
-5. Ejecutar la aplicación:
-    ```bash
-    python src/main.py
-    ```
-
-6. Ejecutar las pruebas para asegurar que todo funciona correctamente:
-    ```bash
-    pytest tests/
-    ```
-
----
-
-## 🔑 **Autenticación y Autorización**
-- **JWT (JSON Web Token):** Autenticación para usuarios externos.
-- **Service Token:** Token estático para comunicación segura entre microservicios.
-- **Middleware de Seguridad:** Diferencia entre solicitudes de usuarios y servicios.
-
-### 🧠 **Flujo de Autenticación**
-1. Las solicitudes de usuarios deben incluir un **Token JWT**.
-2. Las solicitudes entre servicios deben usar un **Token de Servicio** en los encabezados.
-
----
-
-## 📜 **Rutas Principales**
-Las rutas están definidas en `routes.yaml`:
-
-- **Autenticación:** `/auth`
-- **Usuarios:** `/quiz/public`
-- **Servicios Internos:** `/quiz/internal/completed-quizzes`
-- **Estadísticas:** `/stats`
-
----
-
-## 🐳 **Despliegue con Docker Compose**
+### 1. Clonar el repositorio:
 ```bash
-docker-compose up --build
+git clone https://github.com/tu-usuario/api-gateway.git
+cd api-gateway
 ```
 
-### 🌍 **Acceder a la API Gateway:**
-```
-http://localhost:5000/
+### 2. Crear y activar un entorno virtual:
+```bash
+python -m venv env
+source env/bin/activate  # En Windows usa `env\Scripts\activate`
 ```
 
----
+### 3. Instalar las dependencias:
+```bash
+pip install -r requirements.txt
+```
 
-## ✅ **Pruebas**
-Ejecuta los tests para asegurar la estabilidad del API Gateway:
+### 4. Configurar las variables de entorno:
+Crea un archivo `.env` en la raíz del proyecto y agrega las variables necesarias:
+```env
+SECRET_KEY=your_secret_key
+JWT_SECRET_KEY=your_jwt_secret
+SERVICE_TIMEOUT=5
+RETRY_ATTEMPTS=3
+AUTH_SERVICE_URL=http://auth-service
+```
+
+### 5. Ejecutar la aplicación:
+```bash
+python src/main.py
+```
+
+### 6. Ejecutar las pruebas para asegurar que todo funcione correctamente:
 ```bash
 pytest tests/
 ```
 
 ---
 
-## 🔄 **Flujo de Comunicación Entre Servicios**
-1. Un servicio interno (por ejemplo, **Stats**) solicita información a **Quiz**.
-2. El API Gateway valida el **Token de Servicio**.
-3. El tráfico se enruta correctamente entre servicios.
+## 🔑 **Autenticación y Autorización**
+- **JWT (JSON Web Token):** Para usuarios externos.
+- **Middleware de Roles:** Garantiza acceso restringido según el nivel del usuario.
+- **Manejadores de Errores:** Detecta y responde a problemas como tokens inválidos o expirados.
+
+### 🧠 **Flujo de Autenticación**
+1. Las solicitudes de usuarios deben incluir un **Token JWT** en el encabezado.
+2. Las solicitudes se verifican mediante el **Middleware JWT**.
+3. Si se requiere, el middleware de roles valida permisos específicos antes de procesar la solicitud.
+
+---
+
+## 📜 **Rutas Principales**
+Las rutas están organizadas en la carpeta `routes/`. Algunas de las más importantes son:
+
+- **Autenticación:** `/auth`
+- **Registro:** `/register`
+- **Servicios Internos:** `/quiz/internal`
+
+---
+
+## 🐳 **Despliegue con Docker Compose**
+### Construir y ejecutar el proyecto:
+```bash
+docker-compose up --build
+```
+
+### 🌍 **Acceder al API Gateway:**
+```plaintext
+http://localhost:5000/
+```
+
+---
+
+## ✅ **Pruebas Automatizadas**
+Ejecuta las pruebas para validar la estabilidad y el correcto funcionamiento del proyecto:
+```bash
+pytest tests/
+```
 
 ---
 
 ## 📊 **Variables de Entorno (.env)**
 ```env
+SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret
-SERVICE_CLIENT_ID=service_client_id
-SERVICE_CLIENT_SECRET=service_client_secret
-INTERNAL_SERVICE_TOKEN=service_internal_token
+SERVICE_TIMEOUT=5
+RETRY_ATTEMPTS=3
 AUTH_SERVICE_URL=http://auth-service
 QUIZ_SERVICE_URL=http://quiz-service
 STATS_SERVICE_URL=http://stats-service
@@ -146,8 +157,17 @@ STATS_SERVICE_URL=http://stats-service
 
 ---
 
+## 🌟 **Posibles Mejoras Futuras**
+- Implementar **ratelimiters** para prevenir abuso de endpoints.
+- Agregar soporte para **OpenAPI** (Swagger) para documentación automática.
+- Integración con un sistema de monitoreo como **Prometheus**.
+- Configurar **CI/CD** con GitHub Actions para despliegue automático.
+- Agregar **cacheo** de respuestas con Redis.
+
+---
+
 ## 🤝 **Contribuciones**
-¡Las contribuciones son bienvenidas! Si encuentras un problema o deseas mejorar algo, abre un **Issue** o envía un **Pull Request**.
+¡Las contribuciones son bienvenidas! Si encuentras un problema o tienes sugerencias, abre un **Issue** o envía un **Pull Request**.
 
 ---
 
@@ -164,8 +184,4 @@ Este proyecto está bajo la licencia **MIT**.
 ---
 
 ¡Gracias por usar el **API Gateway** del sistema de cuestionarios! 🚀🔒
-
-```plaintext
-Desarrollado con ❤️ por [fom78]
-```
 
