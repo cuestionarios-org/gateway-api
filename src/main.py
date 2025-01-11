@@ -1,14 +1,11 @@
 from flask import Flask, jsonify
 from flask_limiter import Limiter
-from flask_limiter.errors import RateLimitExceeded
 from flask_limiter.util import get_remote_address
 from config.config import config_dict
 from routes.register_routes import register_routes
 from utils.error_handlers import register_error_handlers
 from utils.logger import get_logger
 import os
-import requests
-import redis
 
 logger = get_logger(__name__)
 

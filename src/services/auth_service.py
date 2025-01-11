@@ -2,13 +2,17 @@ import requests
 import jwt
 import os
 from config.config import Config
+from utils.logger import get_logger
+logger = get_logger(__name__)
+
 
 class AuthService:
-    AUTH_URL = os.getenv('AUTH_SERVICE_URL')
-    AUTH_USER_URL = os.getenv('AUTH_USER_URL')
+    AUTH_URL = os.getenv('AUTH_SERVICE_URL') + '/auth'
+    AUTH_USER_URL = os.getenv('AUTH_SERVICE_URL') + '/users'
 
     @staticmethod
     def login(payload):
+        logger.warning(f"AUTH_URL: {AuthService.AUTH_URL}")
         response = requests.post(f"{AuthService.AUTH_URL}/login", json=payload)
         return response.json(), response.status_code
 

@@ -2,8 +2,9 @@
 SECRET_KEY=tu_clave_secreta
 JWT_SECRET_KEY=jwt_dev_key
 
-AUTH_SERVICE_URL=http://localhost:5001/auth
-AUTH_USER_URL=http://localhost:5001/users
+
+AUTH_SERVICE_URL=http://auth-service:5001
+
 QUIZ_SERVICE_URL=http://quiz-service:5002
 QA_SERVICE_URL=http://qa-service:5003
 PARTICIPATION_SERVICE_URL=http://participation-service:5004
