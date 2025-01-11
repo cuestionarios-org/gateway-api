@@ -1,8 +1,11 @@
 import requests
+import jwt
 import os
+from config.config import Config
 
 class AuthService:
     AUTH_URL = os.getenv('AUTH_SERVICE_URL')
+    AUTH_USER_URL = os.getenv('AUTH_USER_URL')
 
     @staticmethod
     def login(payload):
@@ -14,6 +17,21 @@ class AuthService:
         response = requests.post(f"{AuthService.AUTH_URL}/register", json=payload)
         return response.json(), response.status_code
     
+    @staticmethod
+    def list_users(token):
+        try:
+            # Prepara los encabezados con el token recibido
+            headers = {"Authorization": token}
+            
+            # Realiza la solicitud al servicio de autenticación
+            response = requests.get(f"{AuthService.AUTH_USER_URL}/list", headers=headers)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError:
+            return {"message": "Error de conexión con el servicio de autenticación."}, 503
+        except Exception as e:
+            return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
+
+        
     @staticmethod
     def protected_route(token):
         from src.config.config import Config
