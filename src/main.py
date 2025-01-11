@@ -22,7 +22,13 @@ def create_app(config_name='development'):
         storage_uri=app.config['LIMTER_STORAGE_URL']  # URL de conexión al almacenamiento
     )
     
-#
+    @app.route('/')
+    def index():
+        return jsonify({
+            'message': 'Welcome to the Flask application!',
+            'status': 'success',
+            'documentation': '/docs'  # Ejemplo de ruta de documentación
+        }), 200
     register_routes(app)
 
    # Registramos manejadores de errores
