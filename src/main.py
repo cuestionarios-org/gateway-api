@@ -34,6 +34,14 @@ def create_app(config_name='development'):
             "message": "El servicio no está disponible en este momento. Por favor, intente más tarde."
         }), 503
     
+    @app.errorhandler(Exception)
+    def global_error_handler(error):
+        logger.error(f"Unexpected error: {error}")
+        return jsonify({
+            "status": "error",
+            "message": "Ocurrió un error inesperado. Intenta más tarde."
+        }), 500
+    
     return app
 
 if __name__ == '__main__':

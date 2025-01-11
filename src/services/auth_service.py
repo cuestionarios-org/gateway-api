@@ -20,24 +20,17 @@ class AuthService:
     @staticmethod
     def list_users(token):
         try:
-            # Decode and validate the token
-            token = token.split("Bearer ")[1]
-            data = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=["HS256"])
-            role = data.get("role")
-
-            if role not in ["admin", "moderator"]:
-                return {"message": "No tienes permisos para acceder a este recurso."}, 403
-
-            # Make the request to the auth service
-            headers = {"Authorization": f"Bearer {token}"}
+            # Prepara los encabezados con el token recibido
+            headers = {"Authorization": token}
+            
+            # Realiza la solicitud al servicio de autenticación
             response = requests.get(f"{AuthService.AUTH_USER_URL}/list", headers=headers)
             return response.json(), response.status_code
-        except jwt.ExpiredSignatureError:
-            return {"message": "El token ha expirado."}, 401
-        except jwt.InvalidTokenError as e:
-            return {"message": "Token inválido.", "error": str(e)}, 401
+        except requests.exceptions.ConnectionError:
+            return {"message": "Error de conexión con el servicio de autenticación."}, 503
         except Exception as e:
             return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
+
         
     @staticmethod
     def protected_route(token):
