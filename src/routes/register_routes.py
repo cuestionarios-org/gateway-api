@@ -2,6 +2,7 @@ from flask import Flask
 from routes.auth_routes import auth_bp
 from routes.questions_routes import qa_bp
 from routes.quizzes_routes import quiz_bp
+from routes.competition_routes import competition_bp
 
 def register_routes(app: Flask):
     """
@@ -13,4 +14,5 @@ def register_routes(app: Flask):
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(qa_bp, url_prefix='/questions')
     app.register_blueprint(quiz_bp, url_prefix='/quizzes')
+    app.register_blueprint(competition_bp, url_prefix='/competitions')
 
