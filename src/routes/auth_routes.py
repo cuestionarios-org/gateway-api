@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.auth_service import AuthService
+from services import AuthService
 from middlewares.role_required import role_required
 
 auth_bp = Blueprint('auth', __name__)

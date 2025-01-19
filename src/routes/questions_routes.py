@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.question_service import QuestionService
+from services import QuestionService
 from middlewares.role_required import role_required
 
 qa_bp = Blueprint('questions', __name__)
@@ -31,10 +31,6 @@ def questions_list_by_category(category_id):
 
     data, status = QuestionService.list_questions_by_category(category_id)
     return jsonify(data), status
-
-from flask import Blueprint, request, jsonify
-from services.question_service import QuestionService
-from middlewares.role_required import role_required
 
 
 # Crear una pregunta con respuestas
