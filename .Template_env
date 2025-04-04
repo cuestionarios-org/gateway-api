@@ -3,14 +3,19 @@ SECRET_KEY=tu_clave_secreta
 JWT_SECRET_KEY=jwt_dev_key
 
 
-AUTH_SERVICE_URL=http://auth-service:5001
+# Puertos y Host de los servicios
+AUTH_HOST=localhost
+QA_HOST=localhost
+COMPETITION_HOST=localhost
 
-QUIZ_SERVICE_URL=http://quiz-service:5002
-QA_SERVICE_URL=http://qa-service:5003
-PARTICIPATION_SERVICE_URL=http://participation-service:5004
-STATS_SERVICE_URL=http://stats-service:5005
+AUTH_PORT=5001
+QA_PORT=5003
+COMPETITION_PORT=5006
+
 
 SERVICE_TIMEOUT=5
 RETRY_ATTEMPTS=3
 LIMITER_DEFAULT_LIMIT=5 per minute
 LIMITER_STORAGE_URL=redis://localhost:6379
+
+PORT = 5500

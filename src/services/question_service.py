@@ -6,8 +6,16 @@ logger = get_logger(__name__)
 
 
 class QuestionService:
-    QA_URL = os.getenv('QA_SERVICE_URL') + '/questions'
-    QA_CATEGORIES_URL = os.getenv('QA_SERVICE_URL') + '/categories'
+
+    """
+    Clase para interactuar con el servicio de preguntas y respuestas.   
+    Contiene métodos para listar preguntas, crear preguntas y respuestas, y acceder a categorías.
+    """
+    # Formaciono de la URL del servicio de preguntas y respuestas
+    QA_SERVICE_URL ='http://' + os.getenv('QA_HOST','localhost') + ':' + os.getenv('QA_PORT','5012')
+
+    QA_URL = QA_SERVICE_URL + '/questions'
+    QA_CATEGORIES_URL = QA_SERVICE_URL + '/categories'
 
     @staticmethod
     def list_categories():

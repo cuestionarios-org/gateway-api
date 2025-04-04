@@ -6,7 +6,13 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 class CompetitionService:
-    COMPETITION_URL = os.getenv('COMPETITION_SERVICE_URL') + '/competitions'
+    """
+    Clase para interactuar con el servicio de competencias.
+    Contiene métodos para listar, crear, obtener, actualizar y eliminar competencias.
+    """
+    # Formaciono de la URL del servicio de competencias
+    COMPETITION_SERVICE_URL = 'http://' + os.getenv('COMPETITION_HOST', 'localhost') + ':' + os.getenv('COMPETITION_PORT', '5013')
+    COMPETITION_URL = COMPETITION_SERVICE_URL + '/competitions'
 
     @staticmethod
     def list_competitions():

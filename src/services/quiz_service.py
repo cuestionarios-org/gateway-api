@@ -6,7 +6,14 @@ logger = get_logger(__name__)
 
 
 class QuizService:
-    QA_URL = os.getenv('QA_SERVICE_URL') + '/quizzes'
+    """
+    Clase para interactuar con el servicio de cuestionarios.
+    Contiene métodos para listar, crear, obtener y actualizar cuestionarios.
+    """
+    # Formaciono de la URL del servicio de cuestionarios
+    QA_SERVICE_URL = 'http://' + os.getenv('QA_HOST', 'localhost') + ':' + os.getenv('QA_PORT', '5012')
+    
+    QA_URL = QA_SERVICE_URL + '/quizzes'
 
     @staticmethod
     def list_quizzes():

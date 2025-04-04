@@ -83,11 +83,7 @@ pip install -r requirements.txt
 ### 4. Configurar las variables de entorno:
 Crea un archivo `.env` en la raíz del proyecto y agrega las variables necesarias:
 ```env
-SECRET_KEY=your_secret_key
-JWT_SECRET_KEY=your_jwt_secret
-SERVICE_TIMEOUT=5
-RETRY_ATTEMPTS=3
-AUTH_SERVICE_URL=http://auth-service
+REHACER
 ```
 
 ### 5. Ejecutar la aplicación:
@@ -146,13 +142,7 @@ pytest tests/
 
 ## 📊 **Variables de Entorno (.env)**
 ```env
-SECRET_KEY=your_secret_key
-JWT_SECRET_KEY=your_jwt_secret
-SERVICE_TIMEOUT=5
-RETRY_ATTEMPTS=3
-AUTH_SERVICE_URL=http://auth-service
-QUIZ_SERVICE_URL=http://quiz-service
-STATS_SERVICE_URL=http://stats-service
+REHACER
 ```
 
 ---

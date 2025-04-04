@@ -7,8 +7,15 @@ logger = get_logger(__name__)
 
 
 class AuthService:
-    AUTH_URL = os.getenv('AUTH_SERVICE_URL') + '/auth'
-    AUTH_USER_URL = os.getenv('AUTH_SERVICE_URL') + '/users'
+    """
+    Clase para interactuar con el servicio de autenticación.
+    Contiene métodos para iniciar sesión, registrar usuarios y acceder a rutas protegidas.
+    """
+    # Formaciono de la URL del servicio de autenticación
+    AUTH_SERVICE_URL ='http://' + os.getenv('AUTH_HOST','localhost') + ':' + os.getenv('AUTH_PORT','5011')
+
+    AUTH_URL = AUTH_SERVICE_URL + '/auth'
+    AUTH_USER_URL = AUTH_SERVICE_URL + '/users'
 
     @staticmethod
     def login(payload):
