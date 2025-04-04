@@ -6,12 +6,41 @@ quiz_bp = Blueprint('quizzes', __name__)
 
 # Rutas para cuestionarios
 
+@quiz_bp.route('/old', methods=['GET'])
+def get_all_quizzesOLD():
+    """
+    Lista todos los cuestionarios o filtra por IDs si se proporciona el parámetro 'quiz_ids'.
+    """
+    quiz_ids_param = request.args.get("quiz_ids")  # "1,3,51"
+
+    if quiz_ids_param:
+        try:
+            quiz_ids = list(map(int, quiz_ids_param.split(",")))  # Convierte "1,3,51" -> [1, 3, 51]
+        except ValueError:
+            return jsonify({"message": "Formato inválido en 'quiz_ids'"}), 400
+
+        data, status = QuizService.list_quizzes_by_ids(quiz_ids)
+    else:
+        data, status = QuizService.list_quizzes()
+
+    return jsonify(data), status
+
 @quiz_bp.route('/', methods=['GET'])
 def get_all_quizzes():
     """
-    Lista todos los cuestionarios.
+    Lista todos los cuestionarios o filtra por IDs si se proporciona el parámetro 'quiz_ids'.
     """
-    data, status = QuizService.list_quizzes()
+    quiz_ids_param = request.args.get("quiz_ids")
+
+    if quiz_ids_param:
+        try:
+            quiz_ids = list(map(int, quiz_ids_param.split(",")))  # Convierte "1,3,51" -> [1, 3, 51]
+        except ValueError:
+            return jsonify({"message": "Formato inválido en 'quiz_ids'"}), 400
+    else:
+        quiz_ids = None
+
+    data, status = QuizService.list_quizzes(quiz_ids)
     return jsonify(data), status
 
 

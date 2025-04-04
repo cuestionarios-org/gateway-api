@@ -14,9 +14,32 @@ class QuizService:
     QA_SERVICE_URL = 'http://' + os.getenv('QA_HOST', 'localhost') + ':' + os.getenv('QA_PORT', '5012')
     
     QA_URL = QA_SERVICE_URL + '/quizzes'
+    @staticmethod
+    def list_quizzes(quiz_ids=None):
+        """
+        Lista todos los cuestionarios o solo los especificados en 'quiz_ids'.
+        """
+        try:
+            params = {"quiz_ids": ",".join(map(str, quiz_ids))} if quiz_ids else {}
+            response = requests.get(f"{QuizService.QA_URL}", params=params)
+
+            if response.status_code == 200:
+                quizzes = response.json()
+                # Asegurar que todos los quizzes tengan la clave 'questions'
+                for quiz in quizzes:
+                    if 'questions' not in quiz:
+                        quiz['questions'] = []
+                return quizzes, 200
+
+            return response.json(), response.status_code
+
+        except requests.exceptions.ConnectionError:
+            return {"message": "Error de conexión con el servicio de cuestionarios."}, 503
+        except Exception as e:
+            return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
 
     @staticmethod
-    def list_quizzes():
+    def list_quizzesOLD():
         """
         Lista todos los cuestionarios asegurando que cada uno tenga la clave 'quiz'.
         """
@@ -79,3 +102,35 @@ class QuizService:
             return {"message": "Error de conexión con el servicio de cuestionarios."}, 503
         except Exception as e:
             return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
+
+    @staticmethod
+    def validate_quizzes_exist(quiz_ids):
+        """
+        Valida que los quizzes especificados existen en el sistema.
+
+        Args:
+            quiz_ids (list): Lista de IDs de quizzes a validar.
+
+        Returns:
+            tuple: (bool, str) -> True si todos existen, False con mensaje de error si alguno no existe.
+        """
+        try:
+            response = requests.get(f"{QuizService.QA_URL}", params={"quiz_ids": ",".join(map(str, quiz_ids))})
+            
+            if response.status_code != 200:
+                return False, f"Error al consultar el servicio de quizzes: {response.text}"
+
+            existing_quizzes = {quiz["id"] for quiz in response.json()}  # IDs existentes
+
+            # Verificar qué quizzes no existen
+            missing_quizzes = [quiz_id for quiz_id in quiz_ids if quiz_id not in existing_quizzes]
+
+            if missing_quizzes:
+                return False, f"Los siguientes quizzes no existen: {missing_quizzes}"
+
+            return True, ""
+
+        except requests.exceptions.ConnectionError:
+            return False, "Error de conexión con el servicio de quizzes."
+        except Exception as e:
+            return False, f"Error inesperado: {str(e)}"

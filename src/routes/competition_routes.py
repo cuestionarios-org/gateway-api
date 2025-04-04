@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services import CompetitionService
+from services import CompetitionService, QuizService
 from middlewares.role_required import role_required
 
 competition_bp = Blueprint('competitions', __name__)
@@ -19,19 +19,29 @@ def get_all_competitions():
 @role_required(["admin", "moderator"])
 def create_competition(token_data):
     """
-    Crea una nueva competencia.
+    Crea una nueva competencia, validando que los quizzes existan.
 
     Args:
         token_data (dict): Información del usuario autenticado.
 
     Returns:
-        dict: La competencia creada.
+        dict: La competencia creada o un mensaje de error.
         int: El estatus de la respuesta.
     """
     data = request.json
     user_id = token_data.get("user_id")
     data["created_by"] = user_id
 
+    # Extraer los quiz_id de la solicitud
+    quiz_ids = [quiz["quiz_id"] for quiz in data.get("quizzes", [])]
+
+    # Validar que los quizzes existen
+    quizzes_exist, error_message = QuizService.validate_quizzes_exist(quiz_ids)
+
+    if not quizzes_exist:
+        return jsonify({"message": "Algunos quizzes no existen", "error": error_message}), 400
+
+    # Si todos los quizzes existen, continuar con la creación de la competencia
     response_data, status = CompetitionService.create_competition(data)
     return jsonify(response_data), status
 
