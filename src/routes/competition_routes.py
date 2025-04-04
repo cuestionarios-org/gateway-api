@@ -30,7 +30,7 @@ def create_competition(token_data):
     """
     data = request.json
     user_id = token_data.get("user_id")
-    data["competition"]["created_by"] = user_id
+    data["created_by"] = user_id
 
     response_data, status = CompetitionService.create_competition(data)
     return jsonify(response_data), status
