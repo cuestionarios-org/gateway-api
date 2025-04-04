@@ -81,9 +81,16 @@ def update_competition(competition_id, token_data):
     user_id = token_data.get("user_id")
     data["modified_by"] = user_id
 
+    # Validar quizzes si vienen en la solicitud
+    if "quizzes" in data:
+        quiz_ids = [quiz.get("quiz_id") for quiz in data["quizzes"] if "quiz_id" in quiz]
+        if quiz_ids:
+            quizzes_exist, error_message = QuizService.validate_quizzes_exist(quiz_ids)
+            if not quizzes_exist:
+                return jsonify({"message": "Algunos quizzes no existen", "error": error_message}), 400
+
     response_data, status = CompetitionService.update_competition(competition_id, data)
     return jsonify(response_data), status
-
 
 @competition_bp.route('/<int:competition_id>', methods=['DELETE'])
 @role_required(["admin", "moderator"])
