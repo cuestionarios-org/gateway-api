@@ -79,7 +79,7 @@ def update_competition(competition_id, token_data):
     """
     data = request.json
     user_id = token_data.get("user_id")
-    data["competition"]["modified_by"] = user_id
+    data["modified_by"] = user_id
 
     response_data, status = CompetitionService.update_competition(competition_id, data)
     return jsonify(response_data), status

@@ -43,5 +43,5 @@ def register_error_handlers(app):
         logger.error(f"Unexpected error: {error}")
         return jsonify({
             "status": "error",
-            "message": "Ocurrió un error inesperado. Intenta más tarde."
+            "message": f"Ocurrió un error inesperado. Intenta más tarde.{error}"
         }), 500
