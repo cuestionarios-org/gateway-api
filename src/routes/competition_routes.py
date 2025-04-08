@@ -6,6 +6,7 @@ import os
 
 # Creación del blueprint para rutas relacionadas a competencias
 competition_bp = Blueprint('competitions', __name__)
+quiz_participation_bp = Blueprint('quiz-participation', __name__)
 
 # Construcción de la URL base del microservicio de competencias
 COMPETITION_SERVICE_URL = 'http://' + os.getenv('COMPETITION_HOST', 'localhost') + ':' + os.getenv('COMPETITION_PORT', '5013')
@@ -153,5 +154,68 @@ def proxy_get_competition_ranking(competition_id):
     return proxy_service_request(
         "GET",
         f"/competitions/{competition_id}/ranking",
+        service_url=COMPETITION_SERVICE_URL
+    )
+
+
+# -----------------------------------------------
+# 🟢 Proxy: Iniciar un quiz
+# POST /quiz-participation/<competition_quiz_id>/participant/<participant_id>/start
+# -----------------------------------------------
+@quiz_participation_bp.route('/<int:competition_quiz_id>/participant/<int:participant_id>/start', methods=['POST'])
+def proxy_start_quiz(competition_quiz_id, participant_id):
+    return proxy_service_request(
+        method="POST",
+        path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}/start",
+        service_url=COMPETITION_SERVICE_URL
+    )
+
+# -----------------------------------------------
+# 🟣 Proxy: Finalizar un quiz con respuestas
+# POST /competitions/<competition_quiz_id>/participant/<participant_id>/finish
+# -----------------------------------------------
+@quiz_participation_bp.route('/<int:competition_quiz_id>/participant/<int:participant_id>/finish', methods=['POST'])
+def proxy_finish_quiz(competition_quiz_id, participant_id):
+    return proxy_service_request(
+        method="POST",
+        path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}/finish",
+        service_url=COMPETITION_SERVICE_URL,
+        json=request.get_json(silent=True)
+    )
+
+# -----------------------------------------------
+# 🔍 Proxy: Obtener respuestas de un participante
+# GET /competitions/<competition_quiz_id>/participant/<participant_id>/answers
+# -----------------------------------------------
+@quiz_participation_bp.route('/<int:competition_quiz_id>/participant/<int:participant_id>/answers', methods=['GET'])
+def proxy_get_user_answers(competition_quiz_id, participant_id):
+    return proxy_service_request(
+        method="GET",
+        path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}/answers",
+        service_url=COMPETITION_SERVICE_URL
+    )
+
+# -----------------------------------------------
+# 📋 Proxy: Obtener todas las respuestas del quiz (paginado)
+# GET /competitions/<competition_quiz_id>/answers?page=1&per_page=50
+# -----------------------------------------------
+@quiz_participation_bp.route('/<int:competition_quiz_id>/answers', methods=['GET'])
+def proxy_get_all_quiz_answers(competition_quiz_id):
+    return proxy_service_request(
+        method="GET",
+        path=f"/quiz-participation/{competition_quiz_id}/answers",
+        service_url=COMPETITION_SERVICE_URL,
+        params=request.args
+    )
+
+# -----------------------------------------------
+# 📚 Proxy: Obtener detalle completo del quiz por participante
+# GET /competitions/<competition_quiz_id>/participant/<participant_id>
+# -----------------------------------------------
+@quiz_participation_bp.route('/<int:competition_quiz_id>/participant/<int:participant_id>', methods=['GET'])
+def proxy_get_complete_quiz_by_user(competition_quiz_id, participant_id):
+    return proxy_service_request(
+        method="GET",
+        path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}",
         service_url=COMPETITION_SERVICE_URL
     )
