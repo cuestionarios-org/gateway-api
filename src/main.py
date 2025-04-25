@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect  
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config.config import config_dict
@@ -23,11 +23,21 @@ def create_app(config_name='development'):
     )
     
     @app.route('/')
+    def root_redirect():
+        return redirect('/api')  # Redirige a la ruta /api
+    
+    @app.route('/api')
     def index():
         return jsonify({
-            'message': 'Welcome to the Flask application!',
+            'message': 'Bienvenido al Api de Cuestionarios',
             'status': 'success',
-            'documentation': '/docs'  # Ejemplo de ruta de documentación
+            'documentation': '/docs',  # Ejemplo de ruta de documentación
+            'auth': '/auth/register',
+            'login': '/auth/login',
+            'quizzes': '/quizzes',
+            'questions': '/questions',
+            'answers': '/answers',
+
         }), 200
     register_routes(app)
 

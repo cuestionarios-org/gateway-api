@@ -125,7 +125,7 @@ def proxy_add_participant_as_admin(competition_id, participant_id):
 # ✅ Usuario se autoinscribe (ID desde token)
 # --------------------------------------------
 @competition_bp.route('/<int:competition_id>/participants', methods=['POST'])
-@role_required(["user", "admin", "moderator"])  # O solo 'user' si querés
+@role_required(['usuario',"user", "admin", "moderator"])  # O solo 'user' si querés
 def proxy_self_register_to_competition(competition_id, token_data):
     """
     Proxy: Usuario autenticado se inscribe en una competencia.
