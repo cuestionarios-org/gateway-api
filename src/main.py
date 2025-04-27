@@ -6,6 +6,7 @@ from routes.register_routes import register_routes
 from utils.error_handlers import register_error_handlers
 from utils.logger import get_logger
 import os
+from flask_cors import CORS
 
 logger = get_logger(__name__)
 
@@ -13,6 +14,8 @@ def create_app(config_name='development'):
     app = Flask(__name__)
     app.config.from_object(config_dict[config_name])
     
+    # Habilita CORS para todos los orígenes y rutas
+    CORS(app)
 
     # Inicializamos el limiter
     limiter = Limiter(

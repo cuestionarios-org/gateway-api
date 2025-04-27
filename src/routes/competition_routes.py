@@ -219,3 +219,24 @@ def proxy_get_complete_quiz_by_user(competition_quiz_id, participant_id):
         path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}",
         service_url=COMPETITION_SERVICE_URL
     )
+
+# -----------------------------------------------
+# 📚 Proxy: Obtener las competencias del usuario
+# GET /competitions/user
+# -----------------------------------------------
+@competition_bp.route('/users', methods=['GET'])
+@role_required(['usuario','user','admin','moderator'])
+def get_user_competitions(token_data):
+    """
+    Devuelve las competencias en las que el usuario está inscrito,
+    las que ha completado y las que aún puede inscribirse.
+    """
+    user_id = token_data['user_id']
+    print("user_id",user_id)
+    # Proxear a: GET /users/{user_id}/competitions?include=pending,active,finished
+    return proxy_service_request(
+        "GET",
+        f"/competitions/users/{user_id}",
+        service_url=COMPETITION_SERVICE_URL,
+        params=request.args  # podríamos usar ?status=pending|active|finished
+    )

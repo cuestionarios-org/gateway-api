@@ -14,6 +14,21 @@ def auth_register():
     data, status = AuthService.register(request.json)
     return jsonify(data), status
 
+
+# creacion de ruta /me para obtener los datos del usuario autenticado
+
+@auth_bp.route('/me', methods=['GET'])
+def auth_me():
+    token = request.headers.get('Authorization')
+    print("➡️➡️➡️ ",token)
+    if not token:
+        return jsonify({"message": "Token is missing!"}), 401
+
+    data, status = AuthService.me(token)
+    return jsonify(data), status
+
+
+
 @auth_bp.route('/list', methods=['GET'])
 @role_required(["admin", "moderator"])
 def auth_list_users():

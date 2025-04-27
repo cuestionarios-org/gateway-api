@@ -1,177 +1,150 @@
-# 🚀 **API Gateway para Sistema de Cuestionarios en Microservicios**
+# 🚀 API Gateway - Sistema de Cuestionarios
 
-## 📚 **Descripción General**
-El **API Gateway** es el punto de entrada centralizado para el sistema de cuestionarios en una arquitectura basada en microservicios. Maneja autenticación, autorización, enrutamiento de solicitudes y comunicación segura entre servicios, asegurando eficiencia, seguridad y escalabilidad. Diseñado con una arquitectura modular para facilitar la extensión y el mantenimiento.
+API Gateway que sirve como punto de entrada centralizado para el sistema de cuestionarios, gestionando autenticación, autorización y enrutamiento de solicitudes.
 
----
+## 📚 Características Principales
 
-## 🛠️ **Tecnologías Utilizadas**
-- **Python** (Flask como framework principal)
-- **PyJWT** (Manejo de autenticación JWT)
-- **Docker** (Contenedorización)
-- **Docker Compose** (Orquestación de servicios)
-- **pytest** (Pruebas automatizadas)
-- **logging** (Registro de logs centralizado)
+- Autenticación JWT
+- Control de acceso basado en roles
+- Rate limiting
+- Manejo centralizado de errores
+- Logging
+- Redirección de peticiones a microservicios
 
----
+## 🛠️ Endpoints Principales
 
-## 📂 **Estructura del Proyecto**
-La estructura actual del proyecto sigue una organización clara y modular:
-
-```
-api-gateway/
-├── src/
-│   ├── config/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── config.py             # Configuraciones globales
-│   │
-│   ├── routes/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── auth_routes.py        # Rutas relacionadas con la autenticación
-│   │   ├── register_routes.py    # Rutas para registro de usuarios
-│   │
-│   ├── services/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── auth_service.py       # Lógica para autenticación y autorización
-│   │
-│   ├── utils/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── error_handlers.py     # Manejadores de errores personalizados
-│   │   ├── logger.py             # Configuración y gestión de logs
-│   │
-│   ├── middlewares/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── jwt_middleware.py     # Middleware para validación JWT
-│   │   ├── role_required.py      # Middleware para validación de roles
-│   │
-│   ├── tests/
-│   │   ├── __init__.py           # Inicializador del módulo
-│   │   ├── test_auth.py          # Pruebas para autenticación
-│   │   ├── test_middlewares.py   # Pruebas para middlewares
-│   │
-│   ├── main.py                   # Punto de entrada principal
-├── requirements.txt              # Dependencias del proyecto
-├── Dockerfile                    # Configuración para construir la imagen Docker
-├── docker-compose.yml            # Orquestación de servicios con Docker Compose
-├── .env                          # Variables de entorno
-├── pytest.ini                    # Configuración para pytest
-├── .gitignore                    # Archivos y carpetas a ignorar en git
-├── readme.md                     # Documentación del proyecto
+### 🔑 Autenticación
+```http
+POST /auth/login
+POST /auth/register
+GET /auth/protected    # Ruta protegida de prueba
+GET /auth/list        # Lista usuarios (admin/moderator)
 ```
 
----
+### 📝 Cuestionarios
+```http
+GET    /quizzes            # Lista todos los cuestionarios
+POST   /quizzes            # Crea nuevo cuestionario (admin/moderator)
+GET    /quizzes/:id        # Obtiene un cuestionario específico
+PUT    /quizzes/:id        # Actualiza un cuestionario (admin/moderator)
+```
 
-## 🧑‍💻 **Primeros Pasos**
+### ❓ Preguntas
+```http
+GET    /questions                      # Lista todas las preguntas
+POST   /questions                      # Crea nueva pregunta (admin/moderator)
+GET    /questions/:id                  # Obtiene una pregunta específica
+PUT    /questions/:id                  # Actualiza una pregunta (admin/moderator)
+GET    /questions/categories           # Lista categorías de preguntas
+POST   /questions/categories           # Crea nueva categoría (admin/moderator)
+GET    /questions/category/:id         # Lista preguntas por categoría
+```
 
-### 1. Clonar el repositorio:
+### 🏆 Competencias
+```http
+GET    /competitions                   # Lista todas las competencias
+POST   /competitions                   # Crea nueva competencia (admin/moderator)
+GET    /competitions/:id               # Obtiene una competencia específica
+PUT    /competitions/:id               # Actualiza una competencia (admin/moderator)
+POST   /competitions/:id/participants  # Auto-inscripción a competencia
+GET    /competitions/:id/ranking       # Obtiene ranking de competencia
+```
+
+### 📋 Participación en Cuestionarios
+```http
+POST   /quiz-participation/:quizId/participant/:participantId/start    # Inicia quiz
+POST   /quiz-participation/:quizId/participant/:participantId/finish   # Finaliza quiz
+GET    /quiz-participation/:quizId/participant/:participantId/answers  # Obtiene respuestas
+GET    /quiz-participation/:quizId/answers                            # Todas las respuestas
+```
+
+## 🚀 Instalación y Configuración
+
+1. Clonar el repositorio:
 ```bash
-git clone https://github.com/tu-usuario/api-gateway.git
-cd api-gateway
+git clone <repositorio>
+cd gateway-api
 ```
 
-### 2. Crear y activar un entorno virtual:
+2. Crear entorno virtual:
 ```bash
 python -m venv env
-source env/bin/activate  # En Windows usa `env\Scripts\activate`
+source env/bin/activate  # En Windows: env\Scripts\activate
 ```
 
-### 3. Instalar las dependencias:
+3. Instalar dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar las variables de entorno:
-Crea un archivo `.env` en la raíz del proyecto y agrega las variables necesarias:
-```env
-REHACER
+4. Configurar variables de entorno:
+```bash
+cp .Template_env .env
+# Editar .env con valores correspondientes
 ```
 
-### 5. Ejecutar la aplicación:
+5. Ejecutar:
 ```bash
 python src/main.py
 ```
 
-### 6. Ejecutar las pruebas para asegurar que todo funcione correctamente:
+## 🔧 Variables de Entorno
+
+```ini
+SECRET_KEY=tu_clave_secreta
+JWT_SECRET_KEY=jwt_dev_key
+
+# Servicios
+AUTH_HOST=localhost
+QA_HOST=localhost
+COMPETITION_HOST=localhost
+
+AUTH_PORT=5001
+QA_PORT=5003
+COMPETITION_PORT=5006
+
+# Configuración
+SERVICE_TIMEOUT=5
+RETRY_ATTEMPTS=3
+LIMITER_DEFAULT_LIMIT=5 per minute
+LIMITER_STORAGE_URL=redis://localhost:6379
+PORT=5500
+```
+
+## 🧪 Pruebas
+
 ```bash
 pytest tests/
 ```
 
----
+## 🔐 Roles y Permisos
 
-## 🔑 **Autenticación y Autorización**
-- **JWT (JSON Web Token):** Para usuarios externos.
-- **Middleware de Roles:** Garantiza acceso restringido según el nivel del usuario.
-- **Manejadores de Errores:** Detecta y responde a problemas como tokens inválidos o expirados.
+- **Admin/Moderator**: Gestión completa de cuestionarios, preguntas y competencias
+- **Usuario**: Participación en competencias y acceso a cuestionarios
+- **Sin autenticar**: Solo acceso a endpoints públicos
 
-### 🧠 **Flujo de Autenticación**
-1. Las solicitudes de usuarios deben incluir un **Token JWT** en el encabezado.
-2. Las solicitudes se verifican mediante el **Middleware JWT**.
-3. Si se requiere, el middleware de roles valida permisos específicos antes de procesar la solicitud.
+## 🐳 Docker
 
----
-
-## 📜 **Rutas Principales**
-Las rutas están organizadas en la carpeta `routes/`. Algunas de las más importantes son:
-
-- **Autenticación:** `/auth`
-- **Registro:** `/register`
-- **Servicios Internos:** `/quiz/internal`
-
----
-
-## 🐳 **Despliegue con Docker Compose**
-### Construir y ejecutar el proyecto:
 ```bash
-docker-compose up --build
+# Construir imagen
+docker build -t gateway-api .
+
+# Ejecutar contenedor
+docker run -p 5000:5000 gateway-api
 ```
 
-### 🌍 **Acceder al API Gateway:**
-```plaintext
-http://localhost:5000/
-```
+## 📝 Logging
 
----
+El sistema utiliza logging centralizado para monitorear:
+- Errores de autenticación
+- Fallos en servicios
+- Peticiones rechazadas por rate limiting
+- Errores de validación
 
-## ✅ **Pruebas Automatizadas**
-Ejecuta las pruebas para validar la estabilidad y el correcto funcionamiento del proyecto:
-```bash
-pytest tests/
-```
+## 👥 Contribución
 
----
-
-## 📊 **Variables de Entorno (.env)**
-```env
-REHACER
-```
-
----
-
-## 🌟 **Posibles Mejoras Futuras**
-- Implementar **ratelimiters** para prevenir abuso de endpoints.
-- Agregar soporte para **OpenAPI** (Swagger) para documentación automática.
-- Integración con un sistema de monitoreo como **Prometheus**.
-- Configurar **CI/CD** con GitHub Actions para despliegue automático.
-- Agregar **cacheo** de respuestas con Redis.
-
----
-
-## 🤝 **Contribuciones**
-¡Las contribuciones son bienvenidas! Si encuentras un problema o tienes sugerencias, abre un **Issue** o envía un **Pull Request**.
-
----
-
-## 📝 **Licencia**
-Este proyecto está bajo la licencia **MIT**.
-
----
-
-## 📬 **Contacto**
-- **Desarrollador:** [Tu Nombre]
-- **Email:** [tu.email@example.com]
-- **LinkedIn:** [Tu Perfil]
-
----
-
-¡Gracias por usar el **API Gateway** del sistema de cuestionarios! 🚀🔒
-
+1. Fork del repositorio
+2. Crear rama feature (`git checkout -b feature/NuevaCaracteristica`)
+3. Commit cambios (`git commit -am 'Añade nueva característica'`)
+4. Push a la rama (`git push origin feature/NuevaCaracteristica`)
+5. Crear Pull Request
