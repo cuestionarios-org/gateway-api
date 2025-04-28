@@ -20,7 +20,6 @@ def auth_register():
 @auth_bp.route('/me', methods=['GET'])
 def auth_me():
     token = request.headers.get('Authorization')
-    print("➡️➡️➡️ ",token)
     if not token:
         return jsonify({"message": "Token is missing!"}), 401
 

@@ -12,10 +12,10 @@ logger = get_logger(__name__)
 
 def create_app(config_name='development'):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_dict[config_name])
     
     # Habilita CORS para todos los orígenes y rutas
-    CORS(app)
 
     # Inicializamos el limiter
     limiter = Limiter(

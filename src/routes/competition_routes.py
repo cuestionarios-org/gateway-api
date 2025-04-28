@@ -232,7 +232,6 @@ def get_user_competitions(token_data):
     las que ha completado y las que aún puede inscribirse.
     """
     user_id = token_data['user_id']
-    print("user_id",user_id)
     # Proxear a: GET /users/{user_id}/competitions?include=pending,active,finished
     return proxy_service_request(
         "GET",
