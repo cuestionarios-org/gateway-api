@@ -19,11 +19,11 @@ def create_app(config_name='development'):
 
     # Inicializamos el limiter
     limiter = Limiter(
-        get_remote_address,  # Utiliza la IP del cliente para limitar las peticiones
-        app=app,  # Asociamos el limiter con nuestra app
-        default_limits=[app.config['LIMTER_DEFAULT_LIMIT']],  # Límite por defecto global
-        storage_uri=app.config['LIMTER_STORAGE_URL']  # URL de conexión al almacenamiento
+        key_func=get_remote_address,  # Usa key_func en vez de pasar la función directo
+        default_limits=[app.config['LIMTER_DEFAULT_LIMIT']],
+        storage_uri=app.config['LIMTER_STORAGE_URL']
     )
+    limiter.init_app(app)
     
     @app.route('/')
     def root_redirect():
