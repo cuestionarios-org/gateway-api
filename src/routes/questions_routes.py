@@ -6,12 +6,12 @@ qa_bp = Blueprint('questions', __name__)
 
 
 # rutas para categorias
-@qa_bp.route('/categories/', methods=['GET'])
+@qa_bp.route('/categories', methods=['GET'])
 def get_all_categories():
     data, status = QuestionService.list_categories()
     return jsonify(data), status
 
-@qa_bp.route('/categories/', methods=['POST'])
+@qa_bp.route('/categories', methods=['POST'])
 @role_required(["admin", "moderator"])
 def create_category():
     data = request.json
@@ -19,7 +19,7 @@ def create_category():
     return jsonify(category_data), status
 
 # rutas para preguntas
-@qa_bp.route('/', methods=['GET'])
+@qa_bp.route('', methods=['GET'])
 def get_all_questions():
     data, status = QuestionService.list_questions()
     return jsonify(data), status
@@ -34,7 +34,7 @@ def questions_list_by_category(category_id):
 
 
 # Crear una pregunta con respuestas
-@qa_bp.route('/', methods=['POST'])
+@qa_bp.route('', methods=['POST'])
 @role_required(["admin", "moderator"])
 def create_question(token_data):
     """

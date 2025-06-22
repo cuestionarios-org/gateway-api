@@ -16,7 +16,7 @@ COMPETITION_SERVICE_URL = 'http://' + os.getenv('COMPETITION_HOST', 'localhost')
 # RUTAS PARA COMPETENCIAS
 # -----------------------
 
-@competition_bp.route('/', methods=['GET'])
+@competition_bp.route('', methods=['GET'])
 def get_all_competitions():
     """
     Lista todas las competencias disponibles.
@@ -42,7 +42,7 @@ def get_competition_by_id(competition_id):
     return proxy_service_request("GET", f"/competitions/{competition_id}", service_url=COMPETITION_SERVICE_URL)
 
 
-@competition_bp.route('/', methods=['POST'])
+@competition_bp.route('', methods=['POST'])
 @role_required(["admin", "moderator"])
 def create_competition(token_data):
     """

@@ -25,7 +25,7 @@ def get_all_quizzesOLD():
 
     return jsonify(data), status
 
-@quiz_bp.route('/', methods=['GET'])
+@quiz_bp.route('', methods=['GET'])
 def get_all_quizzes():
     """
     Lista todos los cuestionarios o filtra por IDs si se proporciona el parámetro 'quiz_ids'.
@@ -44,7 +44,7 @@ def get_all_quizzes():
     return jsonify(data), status
 
 
-@quiz_bp.route('/', methods=['POST'])
+@quiz_bp.route('', methods=['POST'])
 @role_required(["admin", "moderator"])
 def create_quiz(token_data):
     """
