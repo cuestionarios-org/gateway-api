@@ -41,10 +41,11 @@ class QuestionService:
             return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
 
     @staticmethod
-    def list_questions():
+    def list_questions(params=None):
         try:
             # Realiza la solicitud al servicio de autenticación
-            response = requests.get(f"{QuestionService.QA_URL}")
+            # response = requests.get(f"{QuestionService.QA_URL}")
+            response = requests.get(QuestionService.QA_URL, params=params)
             return response.json(), response.status_code
         except requests.exceptions.ConnectionError:
             return {"message": "Error de conexión con el servicio de preguntas y respuestas."}, 503

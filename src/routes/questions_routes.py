@@ -18,10 +18,11 @@ def create_category():
     category_data, status = QuestionService.create_category(data)
     return jsonify(category_data), status
 
-# rutas para preguntas
 @qa_bp.route('', methods=['GET'])
 def get_all_questions():
-    data, status = QuestionService.list_questions()
+    # Obtén los parámetros de la query string
+    params = request.args.to_dict()
+    data, status = QuestionService.list_questions(params)
     return jsonify(data), status
 
 
