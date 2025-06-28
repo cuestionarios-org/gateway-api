@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services import  QuizService
+from services import  QuizService, AuthService
 from middlewares.role_required import role_required
 from services.proxy import proxy_service_request
 import os
@@ -31,7 +31,7 @@ def get_all_competitions():
 @role_required(["admin", "moderator"])
 def get_competition_by_id(competition_id):
     """
-    Obtiene una competencia específica por su ID.
+    Obtiene una competencia específica por su ID y enriquece los participantes con datos de usuario.
 
     Args:
         competition_id (int): Identificador de la competencia.
@@ -39,7 +39,32 @@ def get_competition_by_id(competition_id):
     Returns:
         Response: Datos de la competencia si existe.
     """
-    return proxy_service_request("GET", f"/competitions/{competition_id}", service_url=COMPETITION_SERVICE_URL)
+    # 1. Obtener detalle de la competencia
+    resp, status = proxy_service_request("GET", f"/competitions/{competition_id}", service_url=COMPETITION_SERVICE_URL)
+    if status != 200:
+        return resp, status
+
+    competition = resp.get_json() if hasattr(resp, 'get_json') else resp
+
+    # 2. Enriquecer participantes usando bulk
+    participants = competition.get("participants", [])
+    print("Participants:", participants)
+    participant_ids = [p.get("participant_id") for p in participants if p.get("participant_id") is not None]
+    users_data, users_status = AuthService.get_users_by_ids(participant_ids)
+    users_dict = {u["id"]: u for u in users_data.get("users", [])} if users_status == 200 else {}
+
+    enriched_participants = []
+    for p in participants:
+        user_id = p.get("participant_id")
+        user = users_dict.get(user_id, {})
+        enriched = dict(p)  # Copia todos los datos originales
+        enriched["username"] = user.get("username", "Desconocido")
+        if "competition_id" in enriched:
+            del enriched["competition_id"]
+        enriched_participants.append(enriched)
+    competition["participants"] = enriched_participants
+
+    return jsonify(competition), 200
 
 
 @competition_bp.route('', methods=['POST'])

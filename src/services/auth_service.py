@@ -68,3 +68,17 @@ class AuthService:
             return {"message": "Token válido", "user_id": data['user_id']}, 200
         except Exception as e:
             return {"message": "Token is invalid!", "error": str(e)}, 401
+    
+    @staticmethod
+    def get_users_by_ids(ids, token=None):
+        """
+        Obtiene datos de múltiples usuarios por una lista de IDs.
+        """
+        try:
+            headers = {"Authorization": token} if token else {}
+            response = requests.post(f"{AuthService.AUTH_USER_URL}/bulk", json={"ids": ids}, headers=headers)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError:
+            return {"message": "Error de conexión con el servicio de autenticación."}, 503
+        except Exception as e:
+            return {"message": "Error al procesar la solicitud.", "error": str(e)}, 500
