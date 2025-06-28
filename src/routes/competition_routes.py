@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services import  QuizService, AuthService
+from services import  QuizService, AuthService, QuestionService
 from middlewares.role_required import role_required
 from services.proxy import proxy_service_request
 import os
@@ -63,6 +63,59 @@ def get_competition_by_id(competition_id):
             del enriched["competition_id"]
         enriched_participants.append(enriched)
     competition["participants"] = enriched_participants
+
+    # 3. Enriquecer created_by y modified_by
+    user_ids = []
+    if competition.get("created_by"):
+        user_ids.append(competition["created_by"])
+    if competition.get("modified_by"):
+        user_ids.append(competition["modified_by"])
+    user_ids = list(set(user_ids))  # Evita duplicados
+    users_data, users_status = AuthService.get_users_by_ids(user_ids)
+    users_dict = {u["id"]: u for u in users_data.get("users", [])} if users_status == 200 else {}
+
+    # Agrupar datos de created_by y modified_by en objetos
+    if competition.get("created_by"):
+        user = users_dict.get(competition["created_by"], {})
+        competition["created_by"] = {
+            "id": competition["created_by"],
+            "username": user.get("username", "Desconocido"),
+            "date": competition.get("created_at")
+        }
+    if competition.get("modified_by"):
+        user = users_dict.get(competition["modified_by"], {})
+        competition["modified_by"] = {
+            "id": competition["modified_by"],
+            "username": user.get("username", "Desconocido"),
+            "date": competition.get("updated_at")
+        }
+
+    # 4. Enriquecer quizzes
+    quizzes = competition.get("quizzes", [])
+    quiz_ids = [q.get("quiz_id") for q in quizzes if q.get("quiz_id") is not None]
+    quizzes_data, quizzes_status = QuizService.list_quizzes(quiz_ids)
+    quizzes_dict = {q["id"]: q for q in quizzes_data} if quizzes_status == 200 else {}
+
+    # Obtener categorías para mapear id -> nombre
+    categories_data, categories_status = QuestionService.list_categories()
+    categories_dict = {c["id"]: c["name"] for c in categories_data} if categories_status == 200 else {}
+
+    enriched_quizzes = []
+    for q in quizzes:
+        quiz_id = q.get("quiz_id")
+        quiz_info = quizzes_dict.get(quiz_id, {})
+        enriched = dict(q)
+        if "competition_id" in enriched:
+            del enriched["competition_id"]
+        # Agregar/enriquecer campos desde el microservicio de quizzes
+        enriched["category_id"] = quiz_info.get("category_id")
+        enriched["category_name"] = categories_dict.get(quiz_info.get("category_id"), "Desconocida")
+        enriched["title"] = quiz_info.get("title")
+        enriched["state"] = quiz_info.get("state")
+        enriched["time_limit"] = quiz_info.get("time_limit", enriched.get("time_limit"))
+        enriched["questions_count"] = len(quiz_info.get("questions", [])) if quiz_info.get("questions") else 0
+        enriched_quizzes.append(enriched)
+    competition["quizzes"] = enriched_quizzes
 
     return jsonify(competition), 200
 
