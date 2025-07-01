@@ -242,11 +242,26 @@ def proxy_get_competition_ranking(competition_id):
 # -----------------------------------------------
 @quiz_participation_bp.route('/<int:competition_quiz_id>/participant/<int:participant_id>/start', methods=['POST'])
 def proxy_start_quiz(competition_quiz_id, participant_id):
-    return proxy_service_request(
+    # 1. Llama al microservicio de competencias como antes
+    resp, status = proxy_service_request(
         method="POST",
         path=f"/quiz-participation/{competition_quiz_id}/participant/{participant_id}/start",
         service_url=COMPETITION_SERVICE_URL
     )
+    if status != 200:
+        return resp, status
+
+    data = resp.get_json() if hasattr(resp, 'get_json') else resp
+    quiz_id = data.get("quiz_id")
+    quiz_data, quiz_status = QuizService.get_quiz_by_id(quiz_id) if quiz_id else (None, None)
+
+    # Adjunta preguntas y respuestas si se pudo obtener el quiz
+    if quiz_status == 200 and quiz_data:
+        data["quiz"] = quiz_data
+    else:
+        data["quiz"] = None
+
+    return jsonify(data), 200
 
 # -----------------------------------------------
 # 🟣 Proxy: Finalizar un quiz con respuestas
