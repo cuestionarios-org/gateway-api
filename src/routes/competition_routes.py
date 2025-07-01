@@ -28,7 +28,6 @@ def get_all_competitions():
 
 
 @competition_bp.route('/<int:competition_id>', methods=['GET'])
-@role_required(["admin", "moderator"])
 def get_competition_by_id(competition_id):
     """
     Obtiene una competencia específica por su ID y enriquece los participantes con datos de usuario.
@@ -112,7 +111,8 @@ def get_competition_by_id(competition_id):
         enriched["category_name"] = categories_dict.get(quiz_info.get("category_id"), "Desconocida")
         enriched["title"] = quiz_info.get("title")
         enriched["state"] = quiz_info.get("state")
-        enriched["time_limit"] = quiz_info.get("time_limit", enriched.get("time_limit"))
+        # Prioriza el time_limit original de la competencia
+        enriched["time_limit"] = enriched.get("time_limit", quiz_info.get("time_limit"))
         enriched["questions_count"] = len(quiz_info.get("questions", [])) if quiz_info.get("questions") else 0
         enriched_quizzes.append(enriched)
     competition["quizzes"] = enriched_quizzes
