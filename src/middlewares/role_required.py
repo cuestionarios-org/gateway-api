@@ -8,6 +8,8 @@ def role_required(required_roles):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
+            if request.method == 'OPTIONS':
+                return '', 200
             token = request.headers.get('Authorization')
             if not token:
                 return jsonify({"message": "Token is missing!"}), 401

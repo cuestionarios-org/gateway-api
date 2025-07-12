@@ -332,3 +332,35 @@ def get_user_competitions(token_data):
         service_url=COMPETITION_SERVICE_URL,
         params=request.args  # podríamos usar ?status=pending|active|finished
     )
+
+@competition_bp.route('/competition-quiz/<int:competition_quiz_id>', methods=['PATCH'])
+@role_required(["admin", "moderator"])
+def proxy_update_competition_quiz(competition_quiz_id, token_data):
+    """
+    Proxy: Actualiza un competition_quiz por su ID en el microservicio de competencias.
+    """
+    data = request.json
+    print("XXXXXXXXXXXXXXXX Updating competition_quiz with data:", data)
+    return proxy_service_request(
+        method="PATCH",
+        path=f"/competition-quiz/{competition_quiz_id}",
+        service_url=COMPETITION_SERVICE_URL,
+        json=data
+    )
+
+@competition_bp.route('/competition-quiz', methods=['GET'])
+def get_all_quizes_for_competition():
+    """
+    Obtiene todos los quizzes de una competencia específica.
+
+    Args:
+        token_data (dict): Información del usuario autenticado extraída por el decorador.
+
+    Returns:
+        Response: Lista de quizzes de la competencia.
+      """
+    return proxy_service_request(
+        "GET",
+        f"/competition-quiz",
+        service_url=COMPETITION_SERVICE_URL
+    )
