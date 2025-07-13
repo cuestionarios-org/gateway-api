@@ -335,12 +335,21 @@ def get_user_competitions(token_data):
 
 @competition_bp.route('/competition-quiz/<int:competition_quiz_id>', methods=['PATCH'])
 @role_required(["admin", "moderator"])
-def proxy_update_competition_quiz(competition_quiz_id, token_data):
+def proxy_update_competition_quiz(competition_quiz_id):
     """
     Proxy: Actualiza un competition_quiz por su ID en el microservicio de competencias.
+    Valida que el estado no sea 'preparacion' antes de actualizar.
     """
     data = request.json
-    print("XXXXXXXXXXXXXXXX Updating competition_quiz with data:", data)
+    quiz_id=data.get("quiz_id")
+    # Consultar el quiz antes de actualizar
+    quiz_data, quiz_status = QuizService.get_quiz_by_id(quiz_id)
+    print("XXXXXX ❤❤🤣 Status:", quiz_status, "competition_quiz_id: ", competition_quiz_id, flush=True)
+    if quiz_status == 200 and quiz_data:
+        if quiz_data.get("state") == "preparacion":
+            return jsonify({"message": "No se puede actualizar el cuestionario porque está en estado 'preparacion'."}), 400
+    data = request.json
+    print("XXXXXXX Data to update competition quiz:", data)
     return proxy_service_request(
         method="PATCH",
         path=f"/competition-quiz/{competition_quiz_id}",
